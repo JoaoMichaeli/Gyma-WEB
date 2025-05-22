@@ -24,7 +24,7 @@ export default function DashBoardPage() {
                 </span>
               </p>
               <Link
-                href="/exercises"
+                href="/plans"
                 className="inline-flex items-center bg-[#16a34a] text-white px-4 py-3 rounded-md font-medium text-3xl mx-6"
               >
                 <Check className="mr-2 h-5 w-5" /> Acesse seu treino
@@ -98,7 +98,7 @@ export default function DashBoardPage() {
             </div>
             <div className="flex justify-end">
               <Link
-                href="/exercises"
+                href="/plans"
                 className="inline-flex items-center bg-[#16a34a] text-white px-8 py-4 rounded-md text-4xl font-medium"
               >
                 Acesse seu treino
