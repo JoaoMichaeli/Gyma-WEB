@@ -23,7 +23,8 @@ Gyma-WEB é o frontend da aplicação Gyma, construída com Next.js e Typescript
 - `/context/AuthContext.tsx` — provê estado global de autenticação (email e senha)
 - `/app/plans` — páginas para listagem, criação e edição de planos
 - `/app/login` — página de login do usuário
-- `/app/novo-plano` — formulário para criação de um novo plano de treino
+- `/app/plans/form` — formulário para criação de um novo plano de treino
+- - `/app/plans/edit/[id]` — formulário para editar um plano de treino
 
 ---
 
@@ -85,18 +86,3 @@ yarn dev
 - Botões e inputs estilizados com Tailwind CSS (cores personalizadas para o tema Gyma).
 
 ---
-
-## Próximos passos / melhorias
-
-- Adicionar refresh token / JWT para autenticação mais segura.
-- Implementar paginação na listagem de planos.
-- Melhorar UX e acessibilidade (ex: mensagens de carregamento, foco, etc).
-- Integrar testes unitários e e2e (Jest, React Testing Library, Cypress).
-- Adaptar para mobile com design responsivo aprimorado.
-- Externalizar configuração da URL da API para variável ambiente.
-
----
-
-## Contato
-
-Para dúvidas ou sugestões, abra issues no repositório ou envie e-mail para: seu.email@dominio.com
