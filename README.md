@@ -1,60 +1,102 @@
-# 🏋️‍♀️ Gyma-WEB
+# Gyma-WEB
 
-**Gyma-WEB** é o frontend da aplicação Gyma, desenvolvido com React e TypeScript. Permite aos usuários interagir com o sistema de gerenciamento de treinos e planos personalizados.
-
----
-
-## 🚀 Tecnologias Utilizadas
-
-- React
-- TypeScript
-- JavaScript
-- CSS3
-- Vite
+Gyma-WEB é o frontend da aplicação Gyma, construída com Next.js e Typescript. A aplicação permite que usuários façam login, visualizem, criem, editem e removam planos de treino com exercícios associados. O frontend consome a API Java Spring Boot (Gyma-API) para gerenciar dados autenticados via HTTP Basic Auth.
 
 ---
 
-## 🔧 Como Executar Localmente
+## Tecnologias utilizadas
 
-### 1. Clone o repositório
+- Next.js 13+ (React, Server Components e Client Components)
+- Typescript
+- React Context para autenticação (AuthContext)
+- Fetch API para comunicação HTTP
+- Tailwind CSS para estilização
+- React hooks (useState, useEffect, useContext)
+- Next.js Router (useRouter) para navegação programática
+
+---
+
+## Estrutura principal
+
+- `/app` — diretório padrão do Next.js com páginas e layouts
+- `/components` — componentes React reutilizáveis (Navbar, botões, inputs)
+- `/context/AuthContext.tsx` — provê estado global de autenticação (email e senha)
+- `/app/plans` — páginas para listagem, criação e edição de planos
+- `/app/login` — página de login do usuário
+- `/app/novo-plano` — formulário para criação de um novo plano de treino
+
+---
+
+## Funcionalidades principais
+
+- Login autenticado via HTTP Basic (email e senha)
+- CRUD completo de planos de treino
+- Adicionar, editar e remover exercícios em cada plano
+- Validação de formulários
+- Controle de estado com React Context e useState
+- Navegação com proteção via verificação de autenticação
+- Layout responsivo com Tailwind CSS
+
+---
+
+## Como executar localmente
+
+### Pré-requisitos
+
+- Node.js 18+
+- Yarn ou npm
+- Gyma-API rodando localmente em `http://localhost:8080`
+
+### Passos
+
+1. Clone o repositório:
 
 ```bash
-git clone https://github.com/JoaoMichaeli/Gyma.git
-cd Gyma/WEB
+git clone https://github.com/seuusuario/Gyma-WEB.git
+cd Gyma-WEB
 ```
 
-### 2. Instale as dependências
+2. Instale dependências:
 
 ```bash
 npm install
+# ou
+yarn install
 ```
 
-### 3. Execute o projeto
+3. Rode o servidor de desenvolvimento:
 
 ```bash
 npm run dev
+# ou
+yarn dev
 ```
 
-Acesse a aplicação em: `http://localhost:PORTA` (verifique a porta no terminal)
+4. Acesse `http://localhost:3000` no navegador.
 
 ---
 
-## 🧪 Funcionalidades
+## Configurações importantes
 
-### ✅ Implementadas
-- Cadastro de exercícios físicos  
-- Listagem de exercícios cadastrados
-
-### 🚧 Em desenvolvimento
-- Cadastro e edição de planos de treino  
-- Associação de exercícios aos planos  
-- Autenticação de usuários  
-- Dashboard com resumo de treinos
+- A autenticação é feita via `AuthContext` que mantém email e senha no estado global.
+- Todas as requisições à API usam HTTP Basic Auth (header `Authorization: Basic base64(email:senha)`).
+- URLs da API estão hardcoded para `http://localhost:8080` (alterar se necessário).
+- Componentes de formulário possuem validação simples com mensagens de erro exibidas ao usuário.
+- Botões e inputs estilizados com Tailwind CSS (cores personalizadas para o tema Gyma).
 
 ---
 
-## 👨‍💻 Autor
+## Próximos passos / melhorias
 
-Feito por **João Victor Michaeli de Bem**  
-Estudante de **Análise e Desenvolvimento de Sistemas** na **FIAP**  
-Apaixonado por desenvolvimento **full stack** e **inteligência artificial**.
+- Adicionar refresh token / JWT para autenticação mais segura.
+- Implementar paginação na listagem de planos.
+- Melhorar UX e acessibilidade (ex: mensagens de carregamento, foco, etc).
+- Integrar testes unitários e e2e (Jest, React Testing Library, Cypress).
+- Adaptar para mobile com design responsivo aprimorado.
+- Externalizar configuração da URL da API para variável ambiente.
+
+---
+
+## Contato
+
+Para dúvidas ou sugestões, abra issues no repositório ou envie e-mail para: seu.email@dominio.com
