@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";  // import router
 import { useAuth } from "@/context/AuthContext";
 import Navbar from "@/components/navbar";
 import PlanoItem from "@/components/plano-item";
@@ -11,6 +12,7 @@ import { Plano } from "@/type";
 import { getPlanos, deletePlano } from "@/app/actions/plano-actions";
 
 export default function PlanosPage() {
+  const router = useRouter(); // router aqui
   const { email, senha } = useAuth();
   const [planos, setPlanos] = useState<Plano[]>([]);
   const [loading, setLoading] = useState(true);
@@ -32,6 +34,10 @@ export default function PlanosPage() {
       .finally(() => setLoading(false));
   }, [email, senha]);
 
+  useEffect(() => {
+    router.refresh(); // força atualizar a página quando o componente monta
+  }, []);
+
   const handleDelete = async (id: number) => {
     if (!email || !senha) return;
 
@@ -40,7 +46,6 @@ export default function PlanosPage() {
       setPlanos((prev) => prev.filter((p) => p.id !== id));
     } catch (error) {
       console.error("Erro ao deletar plano:", error);
-      // Aqui você pode exibir toast ou mensagem de erro
     }
   };
 
@@ -63,7 +68,7 @@ export default function PlanosPage() {
           <div className="flex justify-between items-center mb-4">
             <h2 className="text-2xl font-bold text-white">Meus Planos</h2>
             <Button asChild>
-              <Link href="/plans/novo" className="flex items-center gap-2">
+              <Link href="/plans/form" className="flex items-center gap-2">
                 <Plus size={16} />
                 Novo Plano
               </Link>

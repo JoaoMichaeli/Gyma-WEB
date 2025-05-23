@@ -2,7 +2,6 @@
 
 import { Plano } from "@/type";
 
-// Helper para gerar o cabeçalho de autenticação
 function authHeader(email: string, senha: string): Headers {
   const basic = Buffer.from(`${email}:${senha}`).toString("base64");
   return new Headers({
@@ -11,7 +10,6 @@ function authHeader(email: string, senha: string): Headers {
   });
 }
 
-// Buscar todos os planos
 export async function getPlanos(email: string, senha: string): Promise<Plano[]> {
   const res = await fetch("http://localhost:8080/plans", {
     method: "GET",
@@ -25,10 +23,9 @@ export async function getPlanos(email: string, senha: string): Promise<Plano[]> 
   }
 
   const data = await res.json();
-  return data.content; // Spring retorna Page<Plan>
+  return data.content;
 }
 
-// Criar novo plano
 export async function createPlano(plano: Partial<Plano>, email: string, senha: string): Promise<Plano> {
   const res = await fetch("http://localhost:8080/plans", {
     method: "POST",
@@ -44,7 +41,6 @@ export async function createPlano(plano: Partial<Plano>, email: string, senha: s
   return await res.json();
 }
 
-// Deletar plano
 export async function deletePlano(id: number, email: string, senha: string): Promise<void> {
   const res = await fetch(`http://localhost:8080/plans/${id}`, {
     method: "DELETE",
@@ -57,11 +53,13 @@ export async function deletePlano(id: number, email: string, senha: string): Pro
   }
 }
 
-// Atualizar plano
 export async function updatePlano(id: number, plano: Partial<Plano>, email: string, senha: string): Promise<Plano> {
   const res = await fetch(`http://localhost:8080/plans/${id}`, {
     method: "PUT",
-    headers: authHeader(email, senha),
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: "Basic " + btoa(`${email}:${senha}`),
+    },
     body: JSON.stringify(plano),
   });
 
@@ -72,3 +70,4 @@ export async function updatePlano(id: number, plano: Partial<Plano>, email: stri
 
   return await res.json();
 }
+

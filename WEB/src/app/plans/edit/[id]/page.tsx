@@ -1,12 +1,14 @@
 "use client";
 
-import { useState } from "react";
-import { useAuth } from "@/context/AuthContext";
+import { useState, useEffect } from "react";
+import { useRouter, usePathname } from "next/navigation";
 import Navbar from "@/components/navbar";
 import { Button } from "@/components/ui/button";
-import { useRouter } from "next/navigation";
+import { Plano, Exercise } from "@/type";
+import { useAuth } from "@/context/AuthContext";
 
 interface ExerciseForm {
+  id?: number;
   name: string;
   muscleGroup: string;
   repetitions: number;
@@ -14,18 +16,60 @@ interface ExerciseForm {
   restSec: number;
 }
 
-export default function NovoPlanoPage() {
-  const { email, senha } = useAuth();
+export default function EditPlanoPage() {
   const router = useRouter();
+  const pathname = usePathname();
+  const { email, senha } = useAuth();
+
+  const planoId = pathname?.split("/").pop();
+
+  const [loading, setLoading] = useState(true);
+  const [saving, setSaving] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   const [name, setName] = useState("");
   const [planType, setPlanType] = useState("");
-  const [exercises, setExercises] = useState<ExerciseForm[]>([
-    { name: "", muscleGroup: "", repetitions: 0, series: 0, restSec: 0 },
-  ]);
+  const [exercises, setExercises] = useState<ExerciseForm[]>([]);
 
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+  useEffect(() => {
+    if (!email || !senha || !planoId) return;
+
+    async function fetchPlano() {
+      setLoading(true);
+      setError(null);
+
+      try {
+        const authHeader = "Basic " + btoa(`${email}:${senha}`);
+
+        const res = await fetch(`http://localhost:8080/plans/${planoId}`, {
+          headers: { Authorization: authHeader },
+        });
+
+        if (!res.ok) throw new Error("Erro ao carregar plano");
+
+        const plano: Plano = await res.json();
+
+        setName(plano.name);
+        setPlanType(plano.type || "");
+        setExercises(
+          plano.exercises.map((ex) => ({
+            id: ex.id,
+            name: ex.name,
+            muscleGroup: ex.muscleGroup,
+            repetitions: ex.repetitions,
+            series: ex.series,
+            restSec: ex.restSec,
+          }))
+        );
+      } catch (err: any) {
+        setError(err.message || "Erro inesperado");
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    fetchPlano();
+  }, [email, senha, planoId]);
 
   function handleExerciseChange(
     index: number,
@@ -55,34 +99,9 @@ export default function NovoPlanoPage() {
     setExercises(exercises.filter((_, i) => i !== index));
   }
 
-  async function createExercise(exercise: ExerciseForm): Promise<{ id: number }> {
-    const authHeader = "Basic " + btoa(`${email}:${senha}`);
-
-    const res = await fetch("http://localhost:8080/exercises", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: authHeader,
-      },
-      body: JSON.stringify({
-        name: exercise.name,
-        muscleGroup: exercise.muscleGroup.trim(),
-        repetitions: exercise.repetitions,
-        series: exercise.series,
-        restSec: exercise.restSec,
-      }),
-    });
-
-    if (!res.ok) {
-      const errorData = await res.json().catch(() => null);
-      throw new Error(errorData?.message || "Erro ao cadastrar exercício");
-    }
-
-    return res.json();
-  }
-
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
+    setError(null);
 
     if (!name.trim() || !planType.trim()) {
       setError("Nome do plano e tipo do plano são obrigatórios.");
@@ -102,47 +121,62 @@ export default function NovoPlanoPage() {
       }
     }
 
-    setLoading(true);
-    setError(null);
+    if (!email || !senha || !planoId) {
+      setError("Usuário não autenticado ou plano inválido.");
+      return;
+    }
+
+    setSaving(true);
 
     try {
-      const exerciseIds = [];
-      for (const ex of exercises) {
-        const exData = await createExercise(ex);
-        exerciseIds.push({ id: exData.id });
-      }
-
       const authHeader = "Basic " + btoa(`${email}:${senha}`);
 
-      const resPlan = await fetch("http://localhost:8080/plans", {
-        method: "POST",
+      const body = {
+        name,
+        type: planType,
+        exercises: exercises.map((ex) => ({
+          id: ex.id,
+          name: ex.name,
+          muscleGroup: ex.muscleGroup,
+          repetitions: ex.repetitions,
+          series: ex.series,
+          restSec: ex.restSec,
+        })),
+      };
+
+      const res = await fetch(`http://localhost:8080/plans/${planoId}`, {
+        method: "PUT",
         headers: {
           "Content-Type": "application/json",
           Authorization: authHeader,
         },
-        body: JSON.stringify({
-          name,
-          type: planType,  // <-- aqui enviamos tipo como string
-          exercises: exerciseIds,
-        }),
+        body: JSON.stringify(body),
       });
 
-      if (!resPlan.ok) {
-        throw new Error("Erro ao cadastrar plano");
+      if (!res.ok) {
+        const errorData = await res.json().catch(() => null);
+        throw new Error(errorData?.message || "Erro ao atualizar plano");
       }
 
       router.push("/plans");
     } catch (err: any) {
-      console.error(err);
       setError(err.message || "Erro inesperado");
-      setLoading(false);
+      setSaving(false);
     }
   }
 
   if (!email || !senha) {
     return (
       <main className="flex items-center justify-center min-h-screen bg-slate-900 p-6">
-        <p className="text-white text-center">Faça login para cadastrar um plano.</p>
+        <p className="text-white text-center">Faça login para editar um plano.</p>
+      </main>
+    );
+  }
+
+  if (loading) {
+    return (
+      <main className="flex items-center justify-center min-h-screen bg-slate-900 p-6">
+        <p className="text-white text-center">Carregando plano...</p>
       </main>
     );
   }
@@ -155,7 +189,7 @@ export default function NovoPlanoPage() {
           onSubmit={handleSubmit}
           className="bg-slate-800 p-6 rounded w-full max-w-3xl flex flex-col gap-6"
         >
-          <h2 className="text-2xl font-bold text-white">Novo Plano</h2>
+          <h2 className="text-2xl font-bold text-white">Editar Plano</h2>
 
           {error && <p className="text-red-500">{error}</p>}
 
@@ -263,14 +297,29 @@ export default function NovoPlanoPage() {
               </div>
             ))}
 
-            <Button type="button" onClick={addExercise}>
-              Adicionar Exercício
+            <Button
+              type="button"
+              onClick={addExercise}
+              className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded"
+            >
+              + Adicionar Exercício
             </Button>
           </fieldset>
 
-          <Button type="submit" disabled={loading}>
-            {loading ? "Salvando..." : "Salvar Plano"}
-          </Button>
+          <div className="flex gap-4 justify-end">
+            <Button
+              type="button"
+              variant="secondary"
+              onClick={() => router.push("/plans")}
+              className="bg-gray-600 hover:bg-gray-700 text-white"
+            >
+              Cancelar
+            </Button>
+
+            <Button type="submit" disabled={saving} className="bg-blue-600 hover:bg-blue-700 text-white">
+              {saving ? "Salvando..." : "Salvar"}
+            </Button>
+          </div>
         </form>
       </main>
     </>
