@@ -32,7 +32,7 @@ export default function DashBoardPage() {
             </div>
             <div className="relative rounded-lg overflow-hidden">
               <Image
-                src="/imagens/lulaTreinos.png"
+                src="/imagens/treino.png"
                 alt="Pessoa treinando"
                 width={600}
                 height={400}

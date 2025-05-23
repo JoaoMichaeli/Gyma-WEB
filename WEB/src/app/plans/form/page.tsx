@@ -122,7 +122,7 @@ export default function NovoPlanoPage() {
         },
         body: JSON.stringify({
           name,
-          type: planType,  // <-- aqui enviamos tipo como string
+          type: planType,
           exercises: exerciseIds,
         }),
       });
@@ -165,7 +165,7 @@ export default function NovoPlanoPage() {
               type="text"
               value={name}
               onChange={(e) => setName(e.target.value)}
-              className="mt-1 p-2 rounded text-black"
+              className="mt-1 p-2 rounded text-white border border-white focus:outline-none focus:ring-2 focus:ring-green-500"
               required
             />
           </label>
@@ -176,7 +176,7 @@ export default function NovoPlanoPage() {
               type="text"
               value={planType}
               onChange={(e) => setPlanType(e.target.value)}
-              className="mt-1 p-2 rounded text-black"
+              className="mt-1 p-2 rounded text-white border border-white focus:outline-none focus:ring-2 focus:ring-green-500"
               placeholder="Ex: Hipertrofia"
               required
             />
@@ -202,7 +202,7 @@ export default function NovoPlanoPage() {
                     type="text"
                     value={ex.name}
                     onChange={(e) => handleExerciseChange(idx, "name", e.target.value)}
-                    className="mt-1 p-1 rounded text-black"
+                    className="mt-1 p-1 rounded text-white border border-white focus:outline-none focus:ring-2 focus:ring-green-500"
                     required
                   />
                 </label>
@@ -213,7 +213,7 @@ export default function NovoPlanoPage() {
                     type="text"
                     value={ex.muscleGroup}
                     onChange={(e) => handleExerciseChange(idx, "muscleGroup", e.target.value)}
-                    className="mt-1 p-1 rounded text-black"
+                    className="mt-1 p-1 rounded text-white border border-white focus:outline-none focus:ring-2 focus:ring-green-500"
                     placeholder="Ex: Peito, Tríceps"
                     required
                   />
@@ -228,7 +228,7 @@ export default function NovoPlanoPage() {
                     onChange={(e) =>
                       handleExerciseChange(idx, "repetitions", Number(e.target.value))
                     }
-                    className="mt-1 p-1 rounded text-black"
+                    className="mt-1 p-1 rounded text-white border border-white focus:outline-none focus:ring-2 focus:ring-green-500"
                     required
                   />
                 </label>
@@ -242,7 +242,7 @@ export default function NovoPlanoPage() {
                     onChange={(e) =>
                       handleExerciseChange(idx, "series", Number(e.target.value))
                     }
-                    className="mt-1 p-1 rounded text-black"
+                    className="mt-1 p-1 rounded text-white border border-white focus:outline-none focus:ring-2 focus:ring-green-500"
                     required
                   />
                 </label>
@@ -256,19 +256,29 @@ export default function NovoPlanoPage() {
                     onChange={(e) =>
                       handleExerciseChange(idx, "restSec", Number(e.target.value))
                     }
-                    className="mt-1 p-1 rounded text-black"
+                    className="mt-1 p-1 rounded text-white border border-white focus:outline-none focus:ring-2 focus:ring-green-500"
                     required
                   />
                 </label>
               </div>
             ))}
 
-            <Button type="button" onClick={addExercise}>
-              Adicionar Exercício
-            </Button>
+            <div className="flex justify-center mt-4">
+              <Button
+                type="button"
+                onClick={addExercise}
+                className="bg-green-600 hover:bg-green-700 text-white"
+              >
+                Adicionar Exercício
+              </Button>
+            </div>
           </fieldset>
 
-          <Button type="submit" disabled={loading}>
+          <Button
+            type="submit"
+            disabled={loading}
+            className="bg-green-600 hover:bg-green-700 text-white"
+          >
             {loading ? "Salvando..." : "Salvar Plano"}
           </Button>
         </form>

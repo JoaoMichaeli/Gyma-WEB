@@ -39,7 +39,7 @@ export default function Navbar({ active }: NavbarProps) {
         )}
       </ul>
 
-      <img className="size-12 rounded-full hover:scale-105 transition-transform duration-300" src="/imagens/lulaIcon.png" alt="User Profile" />
+      <img className="size-12 rounded-full hover:scale-105 transition-transform duration-300" src="/imagens/user.png" alt="User Profile" />
     </nav>
   );
 }
